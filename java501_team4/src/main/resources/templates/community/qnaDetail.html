@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 상세보기</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#card").hide();
+
+            $("#btn-list").on("click", function () {
+                location.href = "/com/qna";
+            });
+
+            $("#btn-delete").on("click", function () {
+                $("#method").val("DELETE");
+                const frm = $("#frm")[0];
+                frm.action = "/com/qna/" + $("#qIdx").val();
+                frm.submit();
+            });
+
+            $("#btn-update").on("click", function () {
+                $("#method").val("PUT");
+                const frm = $("#frm")[0];
+                frm.action = "/com/qna/" + $("#qIdx").val();
+                frm.submit();
+            });
+
+            $("#dropbtton").on("click", function () {
+                $("#card").toggle("show");
+            })
+
+
+        });
+    </script>
+    <style>
+        body {
+            background-color: #f8f9fa; /* 배경색 조정 */
+        }
+
+        main {
+            background-color: white; /* 메인 영역 배경색 조정 */
+            border-radius: 10px; /* 테두리 둥글게 */
+            padding: 20px; /* 내부 여백 추가 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+
+        h1 {
+            color: #007bff; /* 제목 색상 조정 */
+        }
+
+        .input-group-text {
+            background-color: #007bff; /* 입력 그룹 텍스트 배경색 조정 */
+            color: white; /* 입력 그룹 텍스트 글자색 조정 */
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* 버튼 배경색 조정 */
+            border-color: #6c757d; /* 버튼 테두리 색상 조정 */
+        }
+
+        .btn-danger {
+            background-color: #dc3545; /* 삭제 버튼 배경색 조정 */
+            border-color: #dc3545; /* 삭제 버튼 테두리 색상 조정 */
+        }
+
+        .btn-warning {
+            background-color: #ffc107; /* 수정 버튼 배경색 조정 */
+            border-color: #ffc107; /* 수정 버튼 테두리 색상 조정 */
+        }
+
+        .btn-dark {
+            background-color: #343a40; /* 댓글 입력 버튼 배경색 조정 */
+            border-color: #343a40; /* 댓글 입력 버튼 테두리 색상 조정 */
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<main class="container  main-position main-position-top">
+    <section>
+        <div class="mt-5">
+            <form id="frm" method="post">
+                <div class="row mt-3">
+                    <div class="col-sm">
+                        <div class="input-group">
+                            <span class="input-group-text">글제목</span>
+                            <input class="form-control" id="qTitle" name="qTitle" placeholder="제목 입력"
+                                   th:value="${qna.qTitle}"
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <span class="input-group-text">이름</span>
+                            <input class="form-control" id="qName" name="qName" placeholder="이름 입력" readonly
+                                   th:value="${qna.qName}" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text" style="width: 75px">내용</span>
+                        <textarea class="form-control" id="qContent" name="qContent" rows="15"
+                                  th:text="${qna.qContent}"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-sm">
+                        <button class="btn btn-secondary" id="btn-list" type="button">목록</button>
+                    </div>
+                    <div class="col-sm d-flex justify-content-end">
+                        <button class="btn btn-danger me-2" id="btn-delete" type="button">삭제</button>
+                        <button class="btn btn-warning" id="btn-update" type="button" th:if="${session.uId != 'admin'}">수정</button>
+                    </div>
+                </div>
+                <input id="qIdx" name="qIdx" th:value="${qna.qIdx}" type="hidden">
+                <input id="method" name="_method" type="hidden">
+            </form>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="border-top mt-5">
+            <div class="row mt-3">
+                <div class="border rounded p-4 shadow-sm" th:if="${session.uName != null}">
+                    <div class="col-sm justify-content-start">
+                        <button class="btn btn-link text-decoration-none dropdown-toggle" id="dropbtton" type="button">
+                            댓글
+                        </button>
+                    </div>
+
+                    <div class="row mt-3 mb-2" id="card">
+                        <form action="/com/qna/ment" method="post" style="margin: 0;padding: 0;">
+                            <div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <div>
+                                            <input class="form-control-sm" type="text" id="qcName" name="qcName" placeholder="이름" th:value="${session.uName}" readonly>
+                                        </div>
+                                        <div class="mt-1">
+                                            <textarea class="form-control" id="qcContent" name="qcContent" placeholder="내용" rows="2"></textarea>
+                                        </div>
+                                        <input id="qcBoardIdx" name="qcBoardIdx" th:value="${qna.qIdx}" type="hidden"></input>
+
+                                        <button class="btn btn-dark mt-2 btn-sm" type="submit">입력</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div>
+                        <span>댓글 리스트</span>
+
+                        <table class="table mt-2">
+                            <colgroup>
+                                <col style="width: 80%">
+                                <col style="width: 10%">
+                                <col style="width: 5%">
+                            </colgroup>
+                            <tbody>
+                            <tr th:each="item : ${qnaComList}" th:if="${#lists.size(qnaComList)} > 0">
+                                <td th:text="${item.qcContent}"></td>
+                                <td class="text-center" th:text="${item.qcName}"></td>
+                                <td th:if="${session.uId == 'admin'}">
+                                    <a class="btn btn-sm" th:href="@{|/com/qna/del/${item.qcIdx}/${item.qcBoardIdx}|}" style="background: red">삭제</a>
+                                </td>
+                                <td th:unless="${session.uId == 'admin'}">
+                                    <a class="btn btn-sm" th:href="@{|/com/qna/del/${item.qcIdx}/${item.qcBoardIdx}|}" style="background: red" th:if="${item.qcName != '관리자'}">삭제</a>
+                                </td>
+                            </tr>
+                            <tr th:unless="${#lists.size(qnaComList)} > 0">
+                                <td colspan="3">댓글이 없습니다.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

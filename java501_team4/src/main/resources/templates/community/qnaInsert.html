@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 작성</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        main {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group-text {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .form-control {
+            border: 1px solid #007bff;
+        }
+
+        textarea {
+            border: 1px solid #007bff;
+        }
+
+        .btn-secondary {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+
+        .btn-secondary:hover {
+            background-color: #212529;
+            border-color: #212529;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script>
+        $(document).ready(function (){
+            $("#btn-list").on("click", function () {
+                location.href = "/com/qna";
+            });
+        });
+    </script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<main class="container main-position main-position-top">
+    <section>
+        <div class="mt-5">
+            <form action="/com/qna/insert" method="post">
+                <div class="row mt-3">
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <span class="input-group-text">글제목</span>
+                            <input class="form-control" id="qTitle" name="qTitle" placeholder="제목 입력" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="input-group">
+                            <span class="input-group-text">아이디</span>
+                            <input class="form-control" id="qCreateId" name="qCreateId" placeholder="이메일 입력"  type="text" th:value="${session.uId}">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <span class="input-group-text">이름</span>
+                            <input class="form-control" id="qName" name="qName" placeholder="이름 입력"  type="text" th:value="${session.uName}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text" style="width: 75px">내용</span>
+                        <textarea class="form-control" id="qContent" name="qContent" rows="15"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-sm">
+                        <button class="btn btn-secondary" id="btn-list" type="button">목록</button>
+                    </div>
+                    <div class="col-sm d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">등록</button>
+                        <button type="reset" class="btn btn-secondary">취소</button>
+                    </div>
+                </div>
+                <input id="method" name="_method" type="hidden">
+            </form>
+        </div>
+    </section>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

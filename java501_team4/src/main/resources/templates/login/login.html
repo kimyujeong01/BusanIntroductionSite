@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btn-login").on("click", function () {
+                const userId = $("#user-id").val();
+                const userPw = $("#user-pw").val();
+
+                $.ajax({
+                    url: "/login/loginProcess",
+                    type: "POST",
+                    data: {
+                        uId: userId,
+                        uPw: userPw
+                    },
+                    success: function (msg) {
+                        if (msg == "OK"){
+                            location.href = "/festival/pj_main"
+                        }else {
+                            alert("로그인에 실패하였습니다.")
+                            location.href = "/login/login"
+                        }
+                    },
+                    error: function () {
+                        alert("실패");
+                    }
+                });
+            });
+
+            $("#btn-reset").on("click", function () {
+                $("#user-id").val("");
+                $("#user-pw").val("");
+            });
+        })
+    </script>
+    <style>
+        a{
+            text-decoration: none !important;
+        }
+        main{
+            margin-top: 25vh;
+            margin-bottom: 25vh;
+        }
+    </style>
+</head>
+<body id="wrapper">
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<main class="container">
+    <div class="row">
+        <div class="col-sm-4 mx-auto">
+            <div class="border rounded-3 p-3">
+                <h3>로그인</h3>
+                <div class="mt-3">
+                    <label class="form-label" for="user-id">사용자 Email : </label>
+                    <input class="form-control" id="user-id" name="uId" placeholder="email을 입력해주세요" type="text">
+                </div>
+                <div class="mt-3">
+                    <label class="form-label" for="user-pw">사용자 PW : </label>
+                    <input class="form-control" id="user-pw" name="uPw" placeholder="비밀번호를 입력하세요"
+                           type="password">
+                </div>
+                <div class="m-3 d-grid gap-2">
+                    <button class="btn btn-primary" id="btn-login" type="submit">로그인</button>
+                    <button class="btn btn-secondary" id="btn-reset" type="reset">취소</button>
+                </div>
+                <div class="mt-2 d-flex justify-content-end">
+                    <a class="btn btn-link" th:href="@{/member/membership}">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

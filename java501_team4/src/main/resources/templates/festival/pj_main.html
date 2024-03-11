@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>메인페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/festival/pj_main",
+                type: "POST",
+                success: function (data) {
+                    const box = $("#box");
+                    box.empty();
+
+                    let tag = "";
+                    let currentDate = null;
+
+                    if (data.length > 0) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (currentDate !== data[i].fcstDate) {
+                                // 날짜가 변경된 경우에만 출력
+                                currentDate = data[i].fcstDate;
+
+                                let year = currentDate.substring(0, 4);
+                                let month = currentDate.substring(4, 6);
+                                let day = currentDate.substring(6, 8);
+
+                                let formattedDate = `${year}년 ${month}월 ${day}일`;
+
+                                if (tag !== "") {
+                                    // 처음이 아니면서 날짜가 변경된 경우에만 닫는 태그와 <hr> 출력
+                                    tag += "</div><hr>";
+                                }
+
+                                tag += "<div>";
+                                tag += "<div>" + formattedDate
+                            }
+
+                            tag += "<p>";
+                            if (data[i].fcstTime === "0600") {
+                                tag += "최저 온도 : " + "<span>" + data[i].fcstValue + "</span>";
+                            } else if (data[i].fcstTime === "1500") {
+                                tag += "최고 온도 : " + "<span>" + data[i].fcstValue + "</span>";
+                            }
+                            tag += "</p>";
+
+                            if (currentDate !== data[i + 1]?.fcstDate) {
+                                // 마지막으로 출력한 날짜의 닫는 태그
+                                tag += '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">\n' +
+                                    '  <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>\n' +
+                                    '</svg>';
+                                tag += "<p class='st'>맑음</p>"
+                                tag += "</div>";
+                            }
+                        }
+                    } else {
+                        tag += "<div class='text-center'>내용이 없습니다.</div>";
+                    }
+                    box.append(tag);
+                },
+                error: function () {
+                    alert("연결 실패");
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .main-carousel {
+            width: 80%;
+            height: 30%;
+            margin: 0 auto;
+            /*캐러샐 전채 비율조정 (버튼,이미지포함하는 이너) 포함*/
+            /*중요 : 가로비율은 필수로 여기서 조정*/
+        }
+
+        .main-carousel-inner {
+            margin-top: 5%; /*상단간격 : 케러셀과 네브바 사이*/
+            max-height: 513px; /*원본이미지 높이로 설정*/
+
+        }
+
+        .sub-carousel {
+            width: 80%;
+            height: 30%;
+            margin: 0 auto;
+            /*min-height: 200px;*/
+            /*캐러샐 전채 비율조정 (버튼,이미지포함하는 이너) 포함*/
+            /*중요 : 가로비율은 필수로 여기서 조정*/
+        }
+
+        .sub-carousel-inner {
+            margin-top: 10%;
+            /*min-height: 200px;*/
+            max-height: 200px;
+        }
+
+
+        @media (max-width: 1500px) {
+
+            /*메인케러셀 조정*/
+            .main-carousel {
+                width: 90%;
+                height: 30%;
+                margin: 0 auto;
+                /*캐러샐 전채 비율조정 (버튼,이미지포함하는 이너) 포함*/
+                /*중요 : 가로비율은 필수로 여기서 조정*/
+            }
+
+            .main-carousel-inner {
+                margin-top: 5%; /*상단간격 : 케러셀과 네브바 사이*/
+                max-height: 513px; /*원본이미지 높이로 설정*/
+            }
+        }
+
+        @media (max-width: 1500px){
+            /*서브케러셀 조정*/
+
+            .sub-carousel {
+                width: 90%;
+                height: 30%;
+                margin: 0 auto;
+                /*캐러샐 전채 비율조정 (버튼,이미지포함하는 이너) 포함*/
+                /*중요 : 가로비율은 필수로 여기서 조정*/
+            }
+
+            .sub-carousel-inner {
+                margin-top: 10%;
+                /*min-height: 200px;*/
+            }
+        }
+
+        @media (max-width: 991px){
+            .box {
+                flex-direction: column;
+            }
+
+            .date-container {
+                margin-top: 10px;
+                height: auto;
+            }
+
+            .yt-container {
+                padding: 0;
+            }
+
+            .yt-video {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
+    <style>
+        /* 이미지 정렬 스타일 */
+        .bi-sun {
+            float: right; /* 이미지를 오른쪽으로 부동(floating)시킵니다. */
+            margin-top: -85px; /* 이미지와 텍스트 사이의 간격을 조절합니다. 음수값으로 조절해보세요. */
+            margin-left: 10px; /* 이미지와 텍스트 사이의 간격을 지정합니다. */
+            margin-right: 30px;
+            /*width: 50px; !* 너비 조절 *!*/
+            /*height: 50px; !* 높이 조절 *!*/
+        }
+
+        .st {
+            float: right;
+            margin-top: -30px;
+            margin-right: 43px;
+            margin-left: 10px;
+        }
+    </style>
+
+    <style>
+
+        .box {
+            display: flex;
+            width: 100%;
+        }
+
+        .date-container {
+            flex: 3;
+            margin-top: 35px;
+            /*margin: 10px; !* 간격을 조절 *!*/
+            display: inline-block; /* 인라인 블록으로 배치 */
+            border: 1px solid #ccc; /* 테두리 추가 */
+            border-radius: 20px; /* 또는 다른 적절한 값을 사용하세요 */
+            padding: 10px; /* 내부 여백 추가 */
+            height: 380px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .yt-container {
+            flex: 7;
+            padding : 40px;
+        }
+
+        .yt-video {
+            width: 100%; /* 부모 컨테이너에 꽉 차도록 설정 */
+            height: 370px; /* YouTube 플레이어 기본 높이 유지 */
+        }
+
+        /*body {*/
+        /*    font-family: 'Nanum Pen Script', cursive;*/
+        /*    font-size: 30px;*/
+        /*}*/
+
+    </style>
+
+
+</head>
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<div style="width: 100%; overflow: hidden;">
+    <img src="/images/busan.png" alt="background" style="width: 100%; height: auto;">
+</div>
+<main class="content main-position main-position-top">
+    <div class="container text-center mt-2">
+        <h3 style="font-weight: bold; color: #031633">부산의 축제를 즐겨보세요 !</h3>
+    </div>
+    <div id="carouselExample" class="carousel slide main-carousel">
+        <div class="carousel-inner main-carousel-inner">
+            <div class="carousel-item active">
+                <a href="/festival/f_list"><img src="/images/rock.jpg" class="d-block w-100 img-fluid" alt="락페스티벌"/></a>
+            </div>
+            <div class="carousel-item">
+                <a href="/festival/f_list"><img src="/images/nightrace.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+            </div>
+            <div class="carousel-item">
+                <a href="/festival/f_list"><img src="/images/gijang.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+            </div>
+            <div class="carousel-item">
+                <a href="/festival/f_list"><img src="/images/send.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+            </div>
+            <div class="carousel-item">
+                <a href="/festival/f_list"><img src="/images/light.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <!--    날짜, 날씨 -->
+    <div class="container box mt-5">
+        <div class="date-container">
+            <!--            <p th:text="${#temporals.format(#temporals.createNow(), 'yyyy년 MM월 dd일')}"></p>-->
+            <div class="text-center">
+                <span>부산의 기온</span>
+            </div>
+            <hr>
+            <div class="row" id="box">
+
+            </div>
+        </div>
+        <div class="yt-container">
+            <div>
+                <iframe class="yt-video" src="https://www.youtube.com/embed/XRw69fOzQv4" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container text-center" style="margin-top: 100px">
+        <h3 style="font-weight: bold; color: #031633">아름다운 부산의 명소를 둘러보세요 !</h3>
+    </div>
+
+    <div id="carouselsub" class="carousel slide sub-carousel">
+        <div class="carousel-inner sub-carousel-inner">
+            <div class="carousel-item active">
+                <div class="row row-height">
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/sea2.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/sea.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/sea3.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/sea4.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/tem.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/tem2.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/tem3.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/tem4.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row row-height">
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/bridge.png" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/bridge2.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/bridge3.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/bridge5.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/ball.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/park5.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/car.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/sights/s_list"><img src="/images/sci.jpg" class="d-block w-100 img-fluid" alt="..."/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselsub" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselsub" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

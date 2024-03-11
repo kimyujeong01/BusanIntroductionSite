@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 필요</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        main.container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .form-floating {
+            position: relative;
+        }
+
+        .form-control {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+
+        .form-control:focus+label,
+        .form-control:not(:placeholder-shown)+label {
+            font-size: 10px;
+            top: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#btn-submit").on("click", function () {
+                const qCreateId = $("#qCreateId").val();
+                const qIdx = $("#qIdx").val();
+
+                $.ajax({
+                    url: "/com/pass/passProcess",
+                    type: "POST",
+                    data: {qCreateId: qCreateId, qIdx: qIdx},
+                    success: function (msg) {
+                        if (msg == "") {
+                            alert("아이디가 존재합니다.");
+                            location.href = "/login/login";
+                        } else if (msg == "no") {
+                            alert("작성자가 아닙니다.");
+                            location.href = "/com/qna";
+                        } else {
+                            location.href = msg;
+                        }
+
+                    }, error: function () {
+                        alert("연결실패");
+                    }
+                });
+
+            });
+        });
+    </script>
+    <style>
+        main{
+            padding-top: 40vh;
+            padding-bottom: 40vh;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<main class="container">
+    <section>
+        <div class="row">
+            <div class="col-sm">
+                <div class="row mt-3">
+                    <div class="col-sm-4 mx-auto">
+                        <div class="input-group">
+                            <div class="form-floating">
+                                <input class="form-control" id="qCreateId" name="qCreateId" type="text" placeholder="">
+                                <label for="qCreateId">아이디</label>
+                            </div>
+                            <button class="btn btn-primary" id="btn-submit" type="submit">확인</button>
+                        </div>
+                    </div>
+                </div>
+                <input id="qIdx" name="qIdx" th:value="${qIdx}" type="hidden">
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

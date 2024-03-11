@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitc.java501_team4.mapper.CommunityMapper">
+    <select id="selectBoardPageList" resultType="com.bitc.java501_team4.dto.community.ReviewBoardDTO">
+        SELECT
+        r_idx, r_title, r_create_date, r_create_id, r_viewcnt
+        FROM
+        review
+        ORDER BY
+        r_idx DESC
+    </select>
+
+    <select id="selectBoardDetail" parameterType="int" resultType="com.bitc.java501_team4.dto.community.ReviewBoardDTO">
+        SELECT
+        r_idx, r_title, r_create_date, r_create_id, r_viewcnt, r_content
+        FROM
+        review
+        WHERE
+        r_idx = #{rIdx}
+    </select>
+
+    <insert id="writeBoard" parameterType="com.bitc.java501_team4.dto.community.ReviewBoardDTO">
+        insert
+        into review
+        (r_title,r_content,r_create_date,r_create_id)
+        values
+        (#{rTitle} , #{rContent} , NOW() , #{rCreateId});
+    </insert>
+
+    <update id="updateReview" parameterType="com.bitc.java501_team4.dto.community.ReviewBoardDTO" >
+        UPDATE
+        review
+        SET
+        r_title = #{rTitle},
+        r_content = #{rContent}
+        WHERE
+        r_idx = #{rIdx}
+    </update>
+    <delete id="deleteReview" parameterType="int">
+        DELETE
+    FROM
+        review
+        WHERE
+        r_idx = #{rIdx}
+    </delete>
+
+    <select id="selectCommentDetail" parameterType="int" resultType="com.bitc.java501_team4.dto.community.ReviewCommentDTO">
+        SELECT
+        rev_idx, rev_board_idx, rev_content, rev_id
+        FROM
+        rev_com
+        WHERE
+        rev_board_idx = #{rIdx}
+    </select>
+
+    <insert id="commentReviewWrite" parameterType="com.bitc.java501_team4.dto.community.ReviewCommentDTO">
+        insert into
+        rev_com
+        (rev_board_idx,rev_content,rev_id)
+        value
+        (#{revBoardIdx},#{revContent},#{revId});
+    </insert>
+
+    <delete id="commentReviewDelete" parameterType="com.bitc.java501_team4.dto.community.ReviewCommentDTO">
+        DELETE
+        FROM
+        rev_com
+        WHERE
+        (rev_idx = #{revIdx})
+        AND
+        rev_board_idx = #{revBoardIdx};
+    </delete>
+
+    <delete id="deleteRevAllment" parameterType="int">
+        DELETE
+        FROM
+        rev_com
+        WHERE
+        rev_board_idx = #{rIdx};
+    </delete>
+
+    <update id="updateReviewCount" parameterType="int">
+        update review
+        SET
+        r_viewcnt = r_viewcnt + 1
+        WHERE r_idx = #{rIdx};
+    </update>
+
+
+    <select id="selectQnaList" resultType="com.bitc.java501_team4.dto.community.QnaDTO">
+        select q_idx,q_title,q_create_date,q_create_id,q_name,(select count(*) from qna_com where qc_board_idx = a.q_idx) cnt
+        from qna a
+        order by q_idx desc
+    </select>
+
+    <select id="selectQnaDetail" parameterType="int" resultType="com.bitc.java501_team4.dto.community.QnaDTO">
+        select q_idx,q_title,q_content,q_create_date,q_create_id,q_name
+        from qna a
+        where q_idx = #{qIdx}
+    </select>
+
+    <insert id="insertQna" parameterType="com.bitc.java501_team4.dto.community.QnaDTO">
+        insert into qna(q_title,q_content,q_create_date,q_create_id,q_name)
+        values(#{qTitle},#{qContent},now(),#{qCreateId},#{qName})
+    </insert>
+
+    <delete id="deleteQna" parameterType="int">
+        delete from qna where q_idx = #{qIdx}
+    </delete>
+
+    <update id="updateQna" parameterType="com.bitc.java501_team4.dto.community.QnaDTO">
+        update qna
+        set q_title = #{qTitle},q_content = #{qContent}
+        where q_idx = #{qIdx};
+    </update>
+
+    <select id="selectQnaComList" resultType="com.bitc.java501_team4.dto.community.QnaComDTO" parameterType="int">
+        select qc_content,qc_name,qc_idx,qc_board_idx
+        from qna_com
+        where qc_board_idx = #{qIdx}
+    </select>
+
+    <insert id="insertMent" parameterType="com.bitc.java501_team4.dto.community.QnaComDTO">
+        insert into qna_com(qc_board_idx,qc_content,qc_name)
+        values(#{qcBoardIdx},#{qcContent},#{qcName})
+    </insert>
+
+    <delete id="deleteMent" parameterType="map">
+        delete from qna_com where qc_idx = #{qcIdx} and qc_board_idx = #{qcBoardIdx}
+    </delete>
+
+    <delete id="deleteAllMent" parameterType="int">
+        delete from qna_com where qc_board_idx = #{qIdx}
+    </delete>
+
+    <select id="cntUserId" parameterType="String" resultType="int">
+        select count(*) as cnt from user
+        where u_id = #{qCreateId}
+    </select>
+
+    <select id="selectFileInfo" parameterType="map" resultType="com.bitc.java501_team4.dto.community.reviewFileDTO">
+        select idx,r_idx,o_file,s_file,file_size,create_id,create_date
+        FROM
+        reviewfile
+        WHERE
+        idx=#{idx}
+        AND
+        r_idx=#{rIdx}
+    </select>
+
+    <select id="selectReviewFileList" parameterType="int" resultType="com.bitc.java501_team4.dto.community.reviewFileDTO">
+        SELECT idx,r_idx,o_file,SUBSTRING_INDEX(s_file, "/", -2) s_file,file_size,create_id,create_date
+        FROM
+        reviewfile
+        WHERE
+        r_idx=#{rIdx}
+    </select>
+
+    <insert id="writeReview" parameterType="com.bitc.java501_team4.dto.community.ReviewBoardDTO" useGeneratedKeys="true" keyProperty="rIdx">
+        insert
+        into review
+        (r_title,r_content,r_create_date,r_create_id)
+        values
+        (#{rTitle} , #{rContent} , NOW() , #{rCreateId});
+    </insert>
+
+    <insert id="insertReviewFIleList" parameterType="com.bitc.java501_team4.dto.community.reviewFileDTO">
+        INSERT INTO reviewfile(r_idx,o_file,s_file,file_size,create_id,create_date)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.rIdx},
+            #{item.oFile},
+            #{item.sFile},
+            #{item.fileSize},
+            #{item.createId},
+            NOW()
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectFiledelet" parameterType="int" resultType="com.bitc.java501_team4.dto.community.reviewFileDTO">
+        SELECT idx,r_idx,o_file,SUBSTRING_INDEX(s_file, "/", -1) s_file,file_size,create_id,create_date
+        FROM
+        reviewfile
+        WHERE
+        r_idx= #{rIdx}
+    </select>
+
+    <delete id="deleteReviewFile" parameterType="int">
+        delete from reviewfile where r_idx = #{rIdx}
+    </delete>
+
+
+</mapper>
+
+
+
+
+
+
+
+

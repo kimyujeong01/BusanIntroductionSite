@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+    /*body {*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    align-items: center;*/
+    /*    padding: 0;*/
+    /*    min-height: 100vh;*/
+    /*    margin: 0;*/
+    /*    flex-direction: column;*/
+    /*}*/
+
+    body {
+        background-color: #f8f9fa;
+    }
+    .outline {
+        /*position: relative;*/
+
+        border-radius:10px;
+        /*max-height: 400px;*/
+        /*min-width: 280px;*/
+        width: 60%;
+        /*box-sizing: border-box;*/
+        /*padding: 5% 5%;*/
+        /*height: 40%;*/
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+        border: 1px solid dimgray;
+        background-color: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-image {
+        display: flex;
+        flex: 1;
+        /*margin-right: 20px;*/
+        justify-content: center;
+        align-items: center;
+        max-height: 400px; /* 부모 컨테이너의 최대 높이 설정 */
+    }
+
+    .profile-info {
+        flex: 1;
+        border-left: lightgray 1px solid;
+    }
+
+    .profile-info .inner-line {
+        max-height: 300px;
+    }
+
+    .profile-info h3 {
+        color: #007bff !important;
+    }
+
+    form{
+        min-height: 375px;
+    }
+    a{
+        text-decoration: none;
+        color: #007bff;
+    }
+    h3{
+        color: #007bff !important;
+    }
+    .position-marker1{
+        margin-top: 10%;
+        margin-bottom: 10%;
+    }
+    .position-marker2{
+        margin-bottom: 10%;
+    }
+    .list-group-item {
+        /*display: flex;*/
+        justify-content: space-between;
+        align-items: center;
+        border-color: white !important;
+    }
+    /*#deleteButton {*/
+    /*    background-color: dimgray;*/
+    /*    border: 1px solid dimgray;*/
+    /*}*/
+
+    /*#deleteButton:hover {*/
+    /*    background-color: dimgray;*/
+    /*    border: 1px solid dimgray;*/
+    /*}*/
+
+    form{
+        width: 70%;
+    }
+
+    /*.profile-image img {*/
+    /*    max-height: 75%; !* 이미지 내부의 최대 높이 설정 *!*/
+    /*    width: auto; !* 너비가 높이에 비례하도록 함 *!*/
+    /*}*/
+
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+
+<div class="outline position-marker1 mx-auto">
+    <div class="profile-image">
+        <img class="mx-auto w-50 h-50" src="/images/user.png">
+    </div>
+
+
+    <div class="profile-info">
+        <div class="inner-line">
+            <form class="mx-auto">
+                <div style="margin-top: 10%">
+                    <h3>회원정보</h3>
+                </div>
+                <!-- 회원정보 불러오기 -->
+                <ul class="list-group" style="margin-top: 10%">
+                    <li class="list-group-item">
+                        <span>아이디 :</span>
+                        <span th:text="${uId}"></span>
+                    </li>
+                    <li class="list-group-item" style="margin-top: 5%">
+                        <span>이름 :</span>
+                        <span th:text="${uName}"></span>
+                    </li>
+                </ul>
+                <div>
+                    <a th:href="@{/member/delete}" id="deleteButton" class="btn btn-secondary form-control" style="margin-top: 10%">회원탈퇴</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+<!--    <form class="inner-line">-->
+<!--        <div>-->
+<!--            <h3>회원정보</h3>-->
+<!--        </div>-->
+<!--&lt;!&ndash;회원정보 불러오기&ndash;&gt;-->
+<!--        <ul class="list-group">-->
+<!--            <li class="list-group-item">-->
+<!--                <span>아이디 :</span>-->
+<!--                <span style="margin-bottom: 5%" th:text="${uId}"></span>-->
+<!--            </li>-->
+
+<!--            <li class="list-group-item">-->
+<!--                <span>이름 :</span>-->
+<!--                <span style="margin-bottom: 5%" th:text="${uName}"></span>-->
+<!--            </li>-->
+<!--        </ul>-->
+
+
+<!--        <div>-->
+<!--            <a th:href="@{/member/delete}" id="deleteButton" class="btn btn-secondary form-control">회원탈퇴</a>-->
+<!--        </div>-->
+<!--    </form>-->
+</div>
+<main class="container position-marker2">
+    <h2>내가쓴글 목록</h2>
+    <h3 class="mt-3">Q&A</h3>
+    <table class="table table-hover table-striped">
+        <colgroup>
+            <col style="width: 65%">
+            <col style="width: 15%">
+            <col style="width: 15%">
+            <col style="width: 5%;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>글제목</th>
+            <th>작성일</th>
+            <th>글쓴이</th>
+            <th>댓글수</th>
+        </tr>
+        </thead>
+        <tbody>
+<!--        보드리스트 미구현-->
+        <tr th:if="${#lists.size(userQnaListPaging.getList())} > 0" th:each="qna : ${userQnaListPaging.getList()}">
+            <td>
+                <a class="text-decoration-none" th:href="@{|/com/qna/${qna.qIdx}|}" th:text="${qna.qTitle}"></a>
+            </td>
+            <td th:text="${qna.qCreateDate}"></td>
+            <td th:text="${qna.qCreateId}"></td>
+            <td th:text="${qna.cnt}"></td>
+        </tr>
+        <tr th:unless="${#lists.size(userQnaListPaging.getList())} > 0">
+            <td colspan="5">조회된 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-3" style="margin-bottom: 10vh">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${userQnaListPaging.getPrePage() == 0} ? 'disabled'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum=${userQnaListPaging.getPrePage()})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(userQnaListPaging.getNavigateFirstPage(),userQnaListPaging.getNavigateLastPage())}" th:classappend="${page == userQnaListPaging.getPageNum()} ? 'active'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum=${page})}" th:text="${page}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${userQnaListPaging.getNextPage() == 0} ? 'disabled'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum=${userQnaListPaging.getNextPage()})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+    <h3 class="mt-3">Review</h3>
+    <table class="table table-hover table-striped" style="margin-bottom: 10vh">
+        <colgroup>
+            <col style="width: 65%">
+            <col style="width: 15%">
+            <col style="width: 15%">
+            <col style="width: 5%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>글제목</th>
+            <th>작성일</th>
+            <th>글쓴이</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--        보드리스트 미구현-->
+        <tr th:if="${#lists.size(userReviewListPaging.getList())} > 0" th:each="Review : ${userReviewListPaging.getList()}">
+            <td>
+                <a class="text-decoration-none" th:href="@{|/com/reviewDetail/${Review.rIdx}|}" th:text="${Review.rTitle}"></a>
+            </td>
+            <td th:text="${Review.rCreateDate}"></td>
+            <td th:text="${Review.rCreateId}"></td>
+            <td th:text="${Review.rViewCnt}"></td>
+        </tr>
+        <tr th:unless="${#lists.size(userReviewListPaging.getList())} > 0">
+            <td colspan="5">조회된 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-3" style="margin-bottom: 10vh">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${userReviewListPaging.getPrePage() == 0} ? 'disabled'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum2=${userReviewListPaging.getPrePage()})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(userReviewListPaging.getNavigateFirstPage(),userReviewListPaging.getNavigateLastPage())}" th:classappend="${page == userReviewListPaging.getPageNum()} ? 'active'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum2=${page})}" th:text="${page}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${userReviewListPaging.getNextPage() == 0} ? 'disabled'">
+                <a class="page-link" href="#" th:href="@{/mypage/mypage(pageNum2=${userReviewListPaging.getNextPage()})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+
+
+
+</main>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>

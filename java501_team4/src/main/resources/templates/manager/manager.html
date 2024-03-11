@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery-3.7.1.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+    <style>
+        /* Overall Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+        }
+
+        h1 {
+            color: #3498db;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Card Section Styles */
+        .row.text-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .col-md-4.mb-4 {
+            margin-bottom: 20px;
+        }
+
+        .card.border-success {
+            border-color: #2ecc71;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card.border-success:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body.text-success {
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Table Section Styles */
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #3498db;
+        }
+
+        .table {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .table td {
+            border-top: 1px solid #ddd;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            margin: 20px 0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .pagination .page-link {
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: #fff;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-lg {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+        /* Additional Styles */
+        .text-start {
+            text-align: start;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{/layout/header :: header-basic}"></div>
+<div class="main-position main-position-top">
+    <div>
+        <!-- 카드 섹션 -->
+        <section class="container">
+            <div class="row text-center">
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title">총 리뷰 개수</h5>
+                            <p class="card-text" th:text="${allCnt.getRevCnt()}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title">총 문의 개수</h5>
+                            <p class="card-text" th:text="${allCnt.getQnaCnt()}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title">총 회원 수</h5>
+                            <p class="card-text" th:text="${allCnt.getUseCnt()}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title">회원 증가</h5>
+                            <p class="card-text" th:text="${allCnt.getUpUserCnt()}"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 회원리스트 섹션 -->
+        <section class="container text-center mt-5 fw-bold">
+            <p class="text-center section-title">회원리스트</p>
+
+            <table class="table table-hover table-striped text-center">
+                <colgroup>
+                    <col style="width: 15%">
+                    <col style="width: 40%">
+                    <col style="width: 25%">
+                    <col style="width: 10%">
+                    <col style="width: 10%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th class="text-start">아이디</th>
+                    <th>이름</th>
+                    <th>권한</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.size(userPageList.getList())} > 0" th:each="item : ${userPageList.getList()}">
+                    <td th:text="${item.uIdx}"></td>
+                    <td class="text-start" th:text="${item.uId}"></td>
+                    <td th:text="${item.uName}"></td>
+                    <td th:text="${item.uYn}"></td>
+                    <td th:if="${item.uYn == 'Y'}">
+                        <a class="btn btn-danger btn-sm"
+                           th:href="@{|/manager/check/${item.uIdx}/${item.uYn}|}">차단</a>
+                    </td>
+                    <td th:if="${item.uYn == 'N'}">
+                        <a class="btn btn-success btn-sm"
+                           th:href="@{|/manager/check/${item.uIdx}/${item.uYn}|}">해제</a>
+                    </td>
+                </tr>
+                <tr th:unless="${#lists.size(userPageList.getList())} > 0">
+                    <td colspan="5">조회된 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-3">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${userPageList.getPrePage() == 0} ? 'disabled'">
+                        <a class="page-link" href="#"
+                           th:href="@{/manager/manager(pageNum=${userPageList.getPrePage()})}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:each="page : ${#numbers.sequence(userPageList.getNavigateFirstPage(),userPageList.getNavigateLastPage())}"
+                        th:classappend="${page == userPageList.getPageNum()} ? 'active'">
+                        <a class="page-link" href="#"
+                           th:href="@{/manager/manager(pageNum=${page})}" th:text="${page}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${userPageList.getNextPage() == 0} ? 'disabled'">
+                        <a class="page-link" href="#"
+                           th:href="@{/manager/manager(pageNum=${userPageList.getNextPage()})}">&raquo;</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-6 mb-3 mx-auto">
+                    <a class="btn btn-primary btn-lg btn-block"
+                       th:href="@{/com/qna}" target="_blank">Q&A 페이지로 이동</a>
+                </div>
+                <div class="col-md-6 mb-3 mx-auto">
+                    <a class="btn btn-primary btn-lg btn-block"
+                       th:href="@{/com/review}" target="_blank">리뷰 페이지로 이동</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div th:replace="~{/layout/footer :: footer}"></div>
+</body>
+</html>
